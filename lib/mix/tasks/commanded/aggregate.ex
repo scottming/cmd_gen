@@ -53,7 +53,6 @@ defmodule Mix.Commanded.Aggregate do
       commands: commands,
       events: events
     }
-    |> dbg
   end
 
   def valid?(schema) do

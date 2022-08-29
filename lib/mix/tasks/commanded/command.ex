@@ -5,7 +5,8 @@ defmodule Mix.Commanded.Command do
             human_singular: nil,
             alias: nil,
             file: nil,
-            context_app: nil
+            context_app: nil,
+            aggregate_singular: nil
 
   alias __MODULE__
 

@@ -156,7 +156,7 @@ defmodule Mix.Tasks.Cmd.Gen.Schema do
 
   @doc false
   def build(args, parent_opts, help \\ __MODULE__) do
-    {schema_opts, parsed, _} = OptionParser.parse(args |> dbg(), switches: @switches)
+    {schema_opts, parsed, _} = OptionParser.parse(args, switches: @switches)
     [schema_name, plural | attrs] = validate_args!(parsed, help)
 
     opts =

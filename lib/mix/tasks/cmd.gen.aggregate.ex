@@ -93,9 +93,7 @@ defmodule Mix.Tasks.Cmd.Gen.Aggregate do
   @doc false
   def run(args) do
     if Mix.Project.umbrella?() do
-      Mix.raise(
-        "mix cmd.gen.aggregate must be invoked from within your *_web application root directory"
-      )
+      Mix.raise("mix cmd.gen.aggregate must be invoked from within your *_web application root directory")
     end
 
     aggregate = build(args, [])
@@ -115,7 +113,7 @@ defmodule Mix.Tasks.Cmd.Gen.Aggregate do
 
   @doc false
   def build(args, parent_opts, help \\ __MODULE__) do
-    {aggregate_opts, parsed, _} = OptionParser.parse(args, switches: @switches) 
+    {aggregate_opts, parsed, _} = OptionParser.parse(args, switches: @switches)
     [aggregate_name, attrs] = validate_args!(parsed, help)
 
     opts =
@@ -146,16 +144,34 @@ defmodule Mix.Tasks.Cmd.Gen.Aggregate do
     files = files_to_be_generated(aggregate)
     Mix.Commanded.copy_from(paths, "priv/templates/cmd.gen.aggregate", binding, files)
 
+    for c <- aggregate.commands do
+      files = [{:eex, "command.ex", c.file}]
+      Mix.Commanded.copy_from(paths, "priv/templates/cmd.gen.aggregate", build_command_binding(c, binding), files)
+    end
+
+    for e <- aggregate.events do
+      files = [{:eex, "event.ex", e.file}]
+      Mix.Commanded.copy_from(paths, "priv/templates/cmd.gen.aggregate", build_event_binding(e, binding), files)
+    end
+
     aggregate
+  end
+
+  defp build_event_binding(e, binding) do
+    e = %{e | aggregate_singular: binding[:aggregate].singular}
+    [event: e]
+  end
+
+  defp build_command_binding(c, binding) do
+    c = %{c | aggregate_singular: binding[:aggregate].singular}
+    [command: c]
   end
 
   @doc false
   def validate_args!([aggregate | _] = args, help) do
     cond do
       not Aggregate.valid?(aggregate) ->
-        help.raise_with_help(
-          "Expected the aggregate argument, #{inspect(aggregate)}, to be a valid module name"
-        )
+        help.raise_with_help("Expected the aggregate argument, #{inspect(aggregate)}, to be a valid module name")
 
       true ->
         args
