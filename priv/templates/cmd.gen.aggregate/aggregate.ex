@@ -1,6 +1,6 @@
 defmodule <%= inspect aggregate.module %> do
   @moduledoc """
-  <%= inspect aggregate.module %> aggregate.
+  <%= aggregate.human_singular %> aggregate.
   """
 
   alias __MODULE__
@@ -26,4 +26,3 @@ defmodule <%= inspect aggregate.module %> do
   end
   <% end %>
 end
-

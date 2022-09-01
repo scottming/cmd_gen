@@ -1,6 +1,6 @@
 defmodule <%= inspect event.module %> do
   @moduledoc """
-  <%= inspect event.module %> event
+  <%= event.human_singular %> event
   """
 
   alias __MODULE__

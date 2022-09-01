@@ -1,6 +1,6 @@
 defmodule <%= inspect command.module %> do
   @moduledoc """
-  <%= inspect command.module %> command.
+  <%= command.human_singular %> command.
   """
 
   alias __MODULE__
@@ -13,4 +13,3 @@ defmodule <%= inspect command.module %> do
     :<%= command.aggregate_singular %>_id
   ]
 end
-
