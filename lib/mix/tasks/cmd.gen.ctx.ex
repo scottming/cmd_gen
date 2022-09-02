@@ -124,9 +124,9 @@ defmodule Mix.Tasks.Cmd.Gen.Ctx do
     {opts, parsed, _} = parse_opts(args)
 
     [context_name, aggregate_name, aggregate_args] = validate_args!(parsed, help)
-    aggregate_module = inspect(Module.concat([context_name, aggregate_name]))
+    # aggregate_module = inspect(Module.concat([context_name, aggregate_name]))
 
-    aggregate = Gen.Aggregate.build([aggregate_module, aggregate_args], opts, help)
+    aggregate = Gen.Aggregate.build([context_name, aggregate_name, aggregate_args], opts, help)
 
     context = Context.new(context_name, aggregate, opts)
     {context, aggregate}

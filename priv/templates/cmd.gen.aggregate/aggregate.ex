@@ -9,7 +9,8 @@ defmodule <%= inspect aggregate.module %> do
 
 
   defstruct [
-    :<%= aggregate.singular %>_id
+    :<%= aggregate.singular %>_id,
+    <%= (for {k, _t} <- aggregate.types, do: inspect k) |> Enum.join(",\n    ")%>,
   ]
 
   <%= for command <- aggregate.commands do %>

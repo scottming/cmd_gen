@@ -115,17 +115,14 @@ defmodule Mix.Tasks.Cmd.Gen.Aggregate do
   @doc false
   def build(args, parent_opts, help \\ __MODULE__) do
     {aggregate_opts, parsed, _} = OptionParser.parse(args, switches: @switches)
-    [aggregate_name, attrs] = validate_args!(parsed, help)
+    [context_name, aggregate_name | attrs] = validate_args!(parsed, help)
 
     opts =
       parent_opts
       |> Keyword.merge(aggregate_opts)
       |> put_context_app(aggregate_opts[:context_app])
 
-    # NOTE: split it to [context_name, aggregate_name]
-    aggregate_module = String.split(aggregate_name, ".")
-    aggregate = Aggregate.new(aggregate_module, attrs, opts)
-
+    aggregate = Aggregate.new([context_name, aggregate_name], attrs, opts)
     aggregate
   end
 
