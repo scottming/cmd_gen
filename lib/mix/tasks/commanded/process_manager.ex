@@ -11,9 +11,11 @@ defmodule Mix.Commanded.ProcessManager do
             event_application_module: nil,
             generate?: true,
             opts: [],
-            events: []
+            events: [],
+            attrs: [],
+            types: %{}
 
-  def new([context_name, aggregate_name], _attrs, opts) do
+  def new([context_name, aggregate_name], cli_attrs, opts) do
     aggregate_module = inspect(Module.concat([context_name, ProcessManagers, aggregate_name]))
     ctx_app = opts[:context_app] || Mix.Commanded.context_app()
     otp_app = Mix.Commanded.otp_app()
@@ -23,6 +25,8 @@ defmodule Mix.Commanded.ProcessManager do
     event_application_module = Module.concat([base, "Application"])
     module = Module.concat([base, aggregate_module])
     file = Mix.Commanded.context_lib_path(ctx_app, basename <> ".ex")
+    attrs = extract_attr_flags(cli_attrs)
+    types = types(attrs)
 
     events =
       for e <- pick(opts, [:event]) do
@@ -45,13 +49,25 @@ defmodule Mix.Commanded.ProcessManager do
       file: file,
       context_app: ctx_app,
       event_application_module: event_application_module,
-      events: events
+      events: events,
+      attrs: attrs,
+      types: types
     }
-    |> dbg()
   end
 
   def valid?(schema) do
     schema =~ ~r/^[A-Z]\w*(\.[A-Z]\w*)*$/
+  end
+
+  defp extract_attr_flags(cli_attrs) do
+    for a <- cli_attrs do
+      [field, type] = String.split(a, ":")
+      {String.to_atom(field), String.to_atom(type)}
+    end
+  end
+
+  defp types(attrs) do
+    Map.new(attrs)
   end
 
   defp pick(keyword, keys) do

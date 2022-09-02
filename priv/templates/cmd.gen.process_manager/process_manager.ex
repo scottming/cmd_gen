@@ -13,7 +13,8 @@ defmodule <%= inspect process_manager.module %> do
 
   @derive Jason.Encoder
   defstruct [
-    :process_uuid
+    :process_uuid,
+    <%= (for {k, _t} <- process_manager.types, do: inspect k) |> Enum.join(",\n    ")%>,
   ]
 
   # TODO: {:start, process_uuid} | {:continue, process_uuid} | {:stop, process_uuid}

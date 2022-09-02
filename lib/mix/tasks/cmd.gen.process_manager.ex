@@ -18,7 +18,7 @@ defmodule Mix.Tasks.Cmd.Gen.ProcessManager do
 
   ## Contexts
 
-  Your aggregates can be generated and added to a separate OTP app.
+  Your process_managers can be generated and added to a separate OTP app.
   Make sure your configuration is properly setup or manually
   specify the context app with the `--context-app` option with
   the CLI.
@@ -114,17 +114,15 @@ defmodule Mix.Tasks.Cmd.Gen.ProcessManager do
 
   @doc false
   def build(args, parent_opts, help \\ __MODULE__) do
-    {aggregate_opts, parsed, _} = OptionParser.parse(args, switches: @switches)
-    [aggregate_name, attrs] = validate_args!(parsed, help)
+    {process_manager_opts, parsed, _} = OptionParser.parse(args, switches: @switches)
+    [context_name, process_manager_name | attrs] = validate_args!(parsed, help)
 
     opts =
       parent_opts
-      |> Keyword.merge(aggregate_opts)
-      |> put_context_app(aggregate_opts[:context_app])
+      |> Keyword.merge(process_manager_opts)
+      |> put_context_app(process_manager_opts[:context_app])
 
-    # NOTE: split it to [context_name, aggregate_name]
-    aggregate_module = String.split(aggregate_name, ".")
-    process_manager = ProcessManager.new(aggregate_module, attrs, opts)
+    process_manager = ProcessManager.new([context_name, process_manager_name], attrs, opts)
 
     process_manager
   end
