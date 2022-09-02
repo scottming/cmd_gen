@@ -98,9 +98,7 @@ defmodule Mix.Tasks.Cmd.Gen.Ctx do
   @doc false
   def run(args) do
     if Mix.Project.umbrella?() do
-      Mix.raise(
-        "mix cmd.gen.context must be invoked from within your *_web application root directory"
-      )
+      Mix.raise("mix cmd.gen.context must be invoked from within your *_web application root directory")
     end
 
     {context, aggregate} = build(args)
@@ -243,27 +241,19 @@ defmodule Mix.Tasks.Cmd.Gen.Ctx do
   defp validate_args!([context, aggregate, _plural | _] = args, help) do
     cond do
       not Context.valid?(context) ->
-        help.raise_with_help(
-          "Expected the context, #{inspect(context)}, to be a valid module name"
-        )
+        help.raise_with_help("Expected the context, #{inspect(context)}, to be a valid module name")
 
       not Aggregate.valid?(aggregate) ->
-        help.raise_with_help(
-          "Expected the aggregate, #{inspect(aggregate)}, to be a valid module name"
-        )
+        help.raise_with_help("Expected the aggregate, #{inspect(aggregate)}, to be a valid module name")
 
       context == aggregate ->
         help.raise_with_help("The context and aggregate should have different names")
 
       context == Mix.Commanded.base() ->
-        help.raise_with_help(
-          "Cannot generate context #{context} because it has the same name as the application"
-        )
+        help.raise_with_help("Cannot generate context #{context} because it has the same name as the application")
 
       aggregate == Mix.Commanded.base() ->
-        help.raise_with_help(
-          "Cannot generate aggregate #{aggregate} because it has the same name as the application"
-        )
+        help.raise_with_help("Cannot generate aggregate #{aggregate} because it has the same name as the application")
 
       true ->
         args

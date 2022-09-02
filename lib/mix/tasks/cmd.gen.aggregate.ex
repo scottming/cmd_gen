@@ -87,7 +87,8 @@ defmodule Mix.Tasks.Cmd.Gen.Aggregate do
   alias Mix.Commanded.Aggregate
 
   @switches [
-    context_app: :string
+    context_app: :string,
+    event: :keep
   ]
 
   @doc false
