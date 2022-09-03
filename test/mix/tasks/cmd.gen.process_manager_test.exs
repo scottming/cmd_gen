@@ -16,15 +16,6 @@ defmodule Mix.Tasks.Cmd.Gen.ProcessManagerTest do
       process_manager = Gen.ProcessManager.build(~w(Execution Transfer amount:string status:string), [])
 
       assert %ProcessManager{
-               alias: Post,
-               module: Phoenix.Blog.Post,
-               singular: "post",
-               human_singular: "Post",
-               attrs: [title: :string],
-               types: %{title: :string}
-             } == process_manager
-
-      assert %ProcessManager{
                context_module: CmdGen.Execution,
                event_application_module: CmdGen.Application,
                events: [],
@@ -38,7 +29,7 @@ defmodule Mix.Tasks.Cmd.Gen.ProcessManagerTest do
                types: %{amount: :string, status: :string}
              } = process_manager
 
-      assert String.ends_with?(process_manager.file, "lib/phoenix/blog/post.ex")
+      assert String.ends_with?(process_manager.file, "lib/cmd_gen/execution/process_managers/transfer.ex")
     end)
   end
 end
