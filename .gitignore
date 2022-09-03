@@ -24,3 +24,6 @@ cmd_gen-*.tar
 
 # Temporary files, for example, from tests.
 /tmp/
+
+# vim
+.projections.json
