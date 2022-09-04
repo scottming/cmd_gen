@@ -52,7 +52,6 @@ defmodule Mix.Commanded.Event do
       command_name
       |> CmdGen.Naming.underscore()
       |> String.split("_", parts: 2)
-      |> dbg
 
     past_tense =
       verb

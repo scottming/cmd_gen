@@ -5,11 +5,8 @@ defmodule <%= inspect command.module %> do
 
   alias __MODULE__
 
-  @type t :: %<%= inspect command.alias %>{
-    <%= command.aggregate_singular %>_id: String.t()
-  }
-
   defstruct [
-    :<%= command.aggregate_singular %>_id
+    :<%= command.aggregate_singular %>_id,
+    <%= (for {f, _t}<- command.types, do: inspect f) |> Enum.join(",\n    ") %>
   ]
 end

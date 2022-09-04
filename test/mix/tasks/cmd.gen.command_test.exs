@@ -13,7 +13,7 @@ defmodule Mix.Tasks.Cmd.Gen.CommandTest do
 
   test "build" do
     in_tmp_project("build", fn ->
-      {command, event} = Gen.Command.build(~w(Accounts User CreateUser), [])
+      {command, event} = Gen.Command.build(~w(Accounts User CreateUser name:string email:string), [])
 
       assert %Command{
                aggregate_singular: "user",
@@ -21,17 +21,19 @@ defmodule Mix.Tasks.Cmd.Gen.CommandTest do
                alias: CreateUser,
                module: CmdGen.Accounts.Commands.CreateUser,
                human_singular: "Create user",
-               singular: "create_user"
+               singular: "create_user",
+               attrs: [name: :string, email: :string],
+               types: %{name: :string, email: :string}
              } = command
 
       assert %Event{
-        context_app: :cmd_gen,
-        aggregate_singular: "user",
-        alias: UserCreated,
-        module: CmdGen.Accounts.Events.UserCreated,
-        human_singular: "User created",
-        singular: "user_created"
-      } = event
+               context_app: :cmd_gen,
+               aggregate_singular: "user",
+               alias: UserCreated,
+               module: CmdGen.Accounts.Events.UserCreated,
+               human_singular: "User created",
+               singular: "user_created"
+             } = event
 
       assert String.ends_with?(command.file, "lib/cmd_gen/accounts/commands/create_user.ex")
       assert String.ends_with?(event.file, "lib/cmd_gen/accounts/events/user_created.ex")

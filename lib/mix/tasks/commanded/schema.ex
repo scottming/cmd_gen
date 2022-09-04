@@ -79,7 +79,7 @@ defmodule Mix.Commanded.Schema do
     file = Mix.Commanded.context_lib_path(ctx_app, basename <> ".ex")
     table = opts[:table] || schema_plural
     {cli_attrs, uniques, redacts} = extract_attr_flags(cli_attrs)
-    {assocs, attrs} = partition_attrs_and_assocs(module, attrs(cli_attrs)) |> dbg()
+    {assocs, attrs} = partition_attrs_and_assocs(module, attrs(cli_attrs))
     types = types(attrs)
     web_namespace = opts[:web] && CmdGen.Naming.camelize(opts[:web])
     web_path = web_namespace && CmdGen.Naming.underscore(web_namespace)

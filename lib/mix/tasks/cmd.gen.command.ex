@@ -60,18 +60,13 @@ defmodule Mix.Tasks.Cmd.Gen.Command do
 
   @doc false
   def copy_new_files(%Command{context_app: _ctx_app} = command, paths, binding) do
-    files = files_to_be_generated(command)
+    files = files_to_be_generated(command) 
     Mix.Commanded.copy_from(paths, "priv/templates/cmd.gen.command", binding, files)
 
     if event = binding[:event] do
       files = [{:eex, "event.ex", event.file}]
-      Mix.Commanded.copy_from(paths, "priv/templates/cmd.gen.command", build_event_binding(event, binding), files)
+      Mix.Commanded.copy_from(paths, "priv/templates/cmd.gen.command", [event: event], files)
     end
-  end
-
-  defp build_event_binding(e, binding) do
-    e = %{e | aggregate_singular: binding[:aggregate].singular}
-    [event: e]
   end
 
   @doc false
@@ -100,7 +95,6 @@ defmodule Mix.Tasks.Cmd.Gen.Command do
     any number of attributes:
 
         mix cmd.gen.command Account User CreateUser
-        mix cmd.gen.command Account User create_user
     """)
   end
 end

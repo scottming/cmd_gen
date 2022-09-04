@@ -6,28 +6,32 @@ defmodule Mix.Commanded.Command do
             alias: nil,
             file: nil,
             context_app: nil,
-            aggregate_singular: nil
+            aggregate_singular: nil,
+            attrs: [],
+            types: %{}
 
   alias __MODULE__
 
   def new(args, fields \\ [], opts \\ [])
 
-  def new([context_name, aggregate_name, command_name], fields, opts) do
+  def new([context_name, aggregate_name, command_name], cli_attrs, opts) do
     aggregate_singular = CmdGen.Naming.underscore(aggregate_name)
-    %{new([context_name, command_name], fields, opts) | aggregate_singular: aggregate_singular}
+    %{new([context_name, command_name], cli_attrs, opts) | aggregate_singular: aggregate_singular}
   end
 
-  def new([context_name, command_name], _fields, opts) do
-    command_module = inspect(Module.concat([context_name, Commands, command_name]))
+  def new([context_name, command_name], cli_attrs, opts) do
+    command_module = inspect(Module.concat([context_name, Commands, command_name])) 
     ctx_app = opts[:context_app] || Mix.Commanded.context_app()
     otp_app = Mix.Commanded.otp_app()
     opts = Keyword.merge(Application.get_env(otp_app, :generators, []), opts)
 
     base = Mix.Commanded.context_base(ctx_app)
-    basename = CmdGen.Naming.underscore(command_module)
+    basename = CmdGen.Naming.underscore(command_module) 
     module = Module.concat([base, command_module])
 
     file = Mix.Commanded.context_lib_path(ctx_app, basename <> ".ex")
+    attrs = extract_attr_flags(cli_attrs)
+    types = types(attrs)
 
     singular =
       module
@@ -42,8 +46,21 @@ defmodule Mix.Commanded.Command do
       singular: singular,
       human_singular: CmdGen.Naming.humanize(singular),
       alias: module |> Module.split() |> List.last() |> Module.concat(nil),
-      file: file
+      file: file,
+      attrs: attrs,
+      types: types
     }
+  end
+
+  defp extract_attr_flags(cli_attrs) do
+    for a <- cli_attrs do
+      [field, type] = String.split(a, ":")
+      {String.to_atom(field), String.to_atom(type)}
+    end
+  end
+
+  defp types(attrs) do
+    Map.new(attrs)
   end
 
   def valid?(schema) do

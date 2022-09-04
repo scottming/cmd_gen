@@ -18,9 +18,7 @@ defmodule <%= inspect aggregate.module %> do
     :ok
   end
   <% end %>
-
   # State mutators
-
   <%= for event <- aggregate.events do %>
   def apply(%<%= inspect aggregate.alias %>{} = state, %<%= inspect event.alias %>{}) do
     state
