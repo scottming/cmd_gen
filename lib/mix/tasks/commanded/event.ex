@@ -38,4 +38,26 @@ defmodule Mix.Commanded.Event do
       file: file
     }
   end
+
+  def new_from_command([context_name, aggregate_name, command_name], fields, opts) do
+    event_name = event_name_from(command_name)
+    aggregate_singular = CmdGen.Naming.underscore(aggregate_name)
+
+    event = new([context_name, event_name], fields, opts)
+    %{event | aggregate_singular: aggregate_singular}
+  end
+
+  defp event_name_from(command_name) do
+    [verb, entity] =
+      command_name
+      |> CmdGen.Naming.underscore()
+      |> String.split("_", parts: 2)
+      |> dbg
+
+    past_tense =
+      verb
+      |> Verbs.conjugate(%{:tense => "past", :person => "third", :plurality => "singular"})
+
+    CmdGen.Naming.camelize(entity <> "_" <> past_tense)
+  end
 end

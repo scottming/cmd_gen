@@ -10,7 +10,14 @@ defmodule Mix.Commanded.Command do
 
   alias __MODULE__
 
-  def new([context_name, command_name], _fields \\ [], opts \\ []) do
+  def new(args, fields \\ [], opts \\ [])
+
+  def new([context_name, aggregate_name, command_name], fields, opts) do
+    aggregate_singular = CmdGen.Naming.underscore(aggregate_name)
+    %{new([context_name, command_name], fields, opts) | aggregate_singular: aggregate_singular}
+  end
+
+  def new([context_name, command_name], _fields, opts) do
     command_module = inspect(Module.concat([context_name, Commands, command_name]))
     ctx_app = opts[:context_app] || Mix.Commanded.context_app()
     otp_app = Mix.Commanded.otp_app()
@@ -37,5 +44,9 @@ defmodule Mix.Commanded.Command do
       alias: module |> Module.split() |> List.last() |> Module.concat(nil),
       file: file
     }
+  end
+
+  def valid?(schema) do
+    schema =~ ~r/^[A-Z]\w*(\.[A-Z]\w*)*$/
   end
 end

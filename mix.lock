@@ -1,0 +1,3 @@
+%{
+  "verbs": {:git, "https://github.com/shannonwells/verbs_ex.git", "4b27067385390d4d2063ec1a09f9d96b97ed9a73", []},
+}
