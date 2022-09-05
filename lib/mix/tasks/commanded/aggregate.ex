@@ -1,5 +1,6 @@
 defmodule Mix.Commanded.Aggregate do
   alias __MODULE__
+  alias Mix.Commanded.{Command, Event}
 
   defstruct module: nil,
             context_module: nil,
@@ -10,8 +11,9 @@ defmodule Mix.Commanded.Aggregate do
             context_app: nil,
             generate?: true,
             opts: [],
-            commands: [],
-            events: [],
+            # commands: [],
+            # events: [],
+            command_with_events: [],
             attrs: [],
             types: %{}
 
@@ -27,15 +29,15 @@ defmodule Mix.Commanded.Aggregate do
     attrs = extract_attr_flags(cli_attrs)
     types = types(attrs)
 
-    commands =
+    command_with_events =
       for c <- pick(opts, [:command]) do
-        new_command(context_name, c, opts)
+        new_command_with_event(context_name, c, opts)
       end
 
-    events =
-      for e <- pick(opts, [:event]) do
-        new_event(context_name, e, opts)
-      end
+    # events =
+    #   for e <- pick(opts, [:event]) do
+    #     new_event(context_name, e, opts)
+    #   end
 
     singular =
       module
@@ -52,8 +54,8 @@ defmodule Mix.Commanded.Aggregate do
       alias: module |> Module.split() |> List.last() |> Module.concat(nil),
       file: file,
       context_app: ctx_app,
-      commands: commands,
-      events: events,
+      command_with_events: command_with_events,
+      # events: events,
       attrs: attrs,
       types: types
     }
@@ -78,15 +80,21 @@ defmodule Mix.Commanded.Aggregate do
     keyword |> Keyword.take(keys) |> Keyword.values()
   end
 
-  defp new_command(context_name, command, opts) when is_binary(command) do
-    command_name = command |> CmdGen.Naming.camelize()
-    Mix.Commanded.Command.new([context_name, command_name], opts)
+  defp new_command_with_event(context_name, command_to_event, opts) when is_binary(command_to_event) do
+    command = Command.new_from_aggregate([context_name, command_to_event], [], opts)
+
+    event =
+      if event_name = Event.event_name_from_aggregate(command_to_event) do
+        Event.new([context_name, event_name], opts)
+      end
+
+    {command, event}
   end
 
-  defp new_event(context_name, command, opts) when is_binary(command) do
-    command_name = command |> CmdGen.Naming.camelize()
-    Mix.Commanded.Event.new([context_name, command_name], opts)
-  end
+  # defp new_event(context_name, command, opts) when is_binary(command) do
+  #   command_name = command |> CmdGen.Naming.camelize()
+  #   Mix.Commanded.Event.new([context_name, command_name], opts)
+  # end
 
   defp context_module(aggregate_module) do
     {module_list, _} = Module.split(aggregate_module) |> Enum.split(2)

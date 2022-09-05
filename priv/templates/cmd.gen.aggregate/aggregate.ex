@@ -4,22 +4,22 @@ defmodule <%= inspect aggregate.module %> do
   """
 
   alias __MODULE__
-  alias <%= inspect aggregate.context_module %>.Commands.{<%= (for c <- aggregate.commands, do: inspect c.alias) |> Enum.join(", ") %>}
-  alias <%= inspect aggregate.context_module %>.Events.{<%= (for e <- aggregate.events, do: inspect e.alias) |> Enum.join(", ") %>}
 
+  <%= aggregate.command_with_events && "alias #{inspect aggregate.context_module}.commands.{#{(for {c, _} <- aggregate.command_with_events, do: inspect c.alias) |> Enum.join(~s(, ))}}"%>
+  <%= (for {_, e} <- aggregate.command_with_events, not is_nil(e), do: e) != [] && "alias #{inspect aggregate.context_module}.events.{#{(for {_, e} <- aggregate.command_with_events, do: inspect e.alias) |> Enum.join(~s(, ))}}"%>
 
   defstruct [
     :<%= aggregate.singular %>_id,
     <%= (for {k, _t} <- aggregate.types, do: inspect k) |> Enum.join(",\n    ")%>,
   ]
 
-  <%= for command <- aggregate.commands do %>
+  <%= for {command, event} <- aggregate.command_with_events do %>
   def execute(%<%= inspect aggregate.alias %>{}, %<%= inspect command.alias %>{}) do
-    :ok
+    <%= if event, do: "{:ok, %#{inspect event.alias}{}}", else: :ok %>
   end
   <% end %>
   # State mutators
-  <%= for event <- aggregate.events do %>
+  <%= for {_, event} <- aggregate.command_with_events, not is_nil(event) do %>
   def apply(%<%= inspect aggregate.alias %>{} = state, %<%= inspect event.alias %>{}) do
     state
   end

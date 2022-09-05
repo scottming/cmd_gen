@@ -20,13 +20,13 @@ defmodule Mix.Commanded.Command do
   end
 
   def new([context_name, command_name], cli_attrs, opts) do
-    command_module = inspect(Module.concat([context_name, Commands, command_name])) 
+    command_module = inspect(Module.concat([context_name, Commands, command_name]))
     ctx_app = opts[:context_app] || Mix.Commanded.context_app()
     otp_app = Mix.Commanded.otp_app()
     opts = Keyword.merge(Application.get_env(otp_app, :generators, []), opts)
 
     base = Mix.Commanded.context_base(ctx_app)
-    basename = CmdGen.Naming.underscore(command_module) 
+    basename = CmdGen.Naming.underscore(command_module)
     module = Module.concat([base, command_module])
 
     file = Mix.Commanded.context_lib_path(ctx_app, basename <> ".ex")
@@ -52,8 +52,13 @@ defmodule Mix.Commanded.Command do
     }
   end
 
+  def new_from_aggregate([context_name, command_to_event], cli_attrs, opts) when is_list(cli_attrs) do
+    command_name = String.split(command_to_event, "->") |> List.first() |> String.trim()
+    new([context_name, command_name], cli_attrs, opts)
+  end
+
   defp extract_attr_flags(cli_attrs) do
-    for a <- cli_attrs do
+    for a <- cli_attrs, is_binary(a) do
       [field, type] = String.split(a, ":")
       {String.to_atom(field), String.to_atom(type)}
     end

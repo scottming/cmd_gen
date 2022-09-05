@@ -60,7 +60,7 @@ defmodule Mix.Tasks.Cmd.Gen.Command do
 
   @doc false
   def copy_new_files(%Command{context_app: _ctx_app} = command, paths, binding) do
-    files = files_to_be_generated(command) 
+    files = files_to_be_generated(command)
     Mix.Commanded.copy_from(paths, "priv/templates/cmd.gen.command", binding, files)
 
     if event = binding[:event] do

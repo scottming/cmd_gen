@@ -47,6 +47,26 @@ defmodule Mix.Commanded.Event do
     %{event | aggregate_singular: aggregate_singular}
   end
 
+  @doc """
+  When create a new event from a aggregate --command args, we need to convert the command name,
+  like `--command 'CreateUser -> UserCreated'`, we only need the `UserCreated` part
+
+  Examples:
+    iex> event_name_from_aggregate("CreateUser -> UserCreated")
+    "UserCreated"
+  """
+  def event_name_from_aggregate(command_to_event) do
+    command_with_event =
+      command_to_event
+      |> String.split("->")
+
+    if length(command_with_event) == 2 do
+      command_with_event
+      |> List.last()
+      |> String.trim()
+    end
+  end
+
   defp event_name_from(command_name) do
     [verb, entity] =
       command_name
