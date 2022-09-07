@@ -1,6 +1,7 @@
 defmodule Mix.Commanded.Aggregate do
   alias __MODULE__
-  alias Mix.Commanded.{Command, Event}
+  alias Mix.Commanded.Command
+  alias Mix.Commanded.Event
 
   defstruct module: nil,
             context_module: nil,
@@ -98,6 +99,8 @@ defmodule Mix.Commanded.Aggregate do
 
   defp context_module(aggregate_module) do
     {module_list, _} = Module.split(aggregate_module) |> Enum.split(2)
-    module_list |> Module.concat()
+    Module.concat(module_list)
   end
+
+  def pre_existing?(%Aggregate{file: file}), do: File.exists?(file)
 end

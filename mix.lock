@@ -1,3 +1,7 @@
 %{
+  "beam_file": {:hex, :beam_file, "0.3.3", "5c603683bdd4c964ce6c5f61b1042cf450bd50b16055ea054e7049a9cedd3663", [:mix], [], "hexpm", "cce43810eefafb79b0dcf1b783e718e8dd7441d70028fcd47ad5246e2a261a9e"},
+  "bunt": {:hex, :bunt, "0.2.1", "e2d4792f7bc0ced7583ab54922808919518d0e57ee162901a16a1b6664ef3b14", [:mix], [], "hexpm", "a330bfb4245239787b15005e66ae6845c9cd524a288f0d141c148b02603777a5"},
+  "recode": {:hex, :recode, "0.3.0", "5c18bad345d051f59d9025c50cc73123176beda7740c8ea9cb2f3a3504ab0b25", [:mix], [{:beam_file, "~> 0.3", [hex: :beam_file, repo: "hexpm", optional: false]}, {:bunt, "~> 0.2.0", [hex: :bunt, repo: "hexpm", optional: false]}, {:sourceror, "~> 0.11", [hex: :sourceror, repo: "hexpm", optional: false]}], "hexpm", "f53f8c2e0ff488a9fe62c99e5b3c1454f839612769143f087c5100e929891d91"},
+  "sourceror": {:hex, :sourceror, "0.11.2", "549ce48be666421ac60cfb7f59c8752e0d393baa0b14d06271d3f6a8c1b027ab", [:mix], [], "hexpm", "9ab659118896a36be6eec68ff7b0674cba372fc8e210b1e9dc8cf2b55bb70dfb"},
   "verbs": {:git, "https://github.com/shannonwells/verbs_ex.git", "4b27067385390d4d2063ec1a09f9d96b97ed9a73", []},
 }

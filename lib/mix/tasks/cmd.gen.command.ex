@@ -43,7 +43,12 @@ defmodule Mix.Tasks.Cmd.Gen.Command do
       |> put_context_app(command_opts[:context_app])
 
     command = Command.new([context_name, aggregate_name, command_name], attrs, opts)
-    event = Event.new_from_command([context_name, aggregate_name, command_name], attrs, opts)
+
+    event =
+      if not opts[:no_event] do
+        Event.new_from_command([context_name, aggregate_name, command_name], attrs, opts)
+      end
+
     {command, event}
   end
 
