@@ -116,7 +116,6 @@ defmodule Mix.Tasks.Cmd.Gen.Context do
     context
     |> files_to_be_generated()
     |> Mix.Commanded.prompt_for_conflicts()
-    |> dbg()
   end
 
   @doc false
